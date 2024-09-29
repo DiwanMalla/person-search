@@ -1,31 +1,44 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Phone, Mail, MapPin } from 'lucide-react'
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Phone, Mail, MapPin } from "lucide-react";
+import { EditUserDialog } from "./edit-user";
 
-interface User {
-  id: string
-  name: string
-  phoneNumber: string
-  email?: string
-  location?: string
+// app/actions/schemas.ts (or wherever User is defined)
+export interface User {
+  id: string;
+  name: string;
+  phoneNumber: string;
+  email: string; // Optional
+  location?: string; // Optional
 }
 
 interface UserCardProps {
-  user: User
+  user: User;
+  onUpdate: (updatedUser: User) => void; // New prop for update
 }
 
-export function UserCard({ user }: UserCardProps) {
+export function UserCard({ user, onUpdate }: UserCardProps) {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="flex flex-row items-center gap-4">
         <Avatar className="w-16 h-16">
-          <AvatarImage src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`} alt={user.name} />
-          <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+          <AvatarImage
+            src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`}
+            alt={user.name}
+          />
+          <AvatarFallback>
+            {user.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
+          </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
           <CardTitle className="text-2xl">{user.name}</CardTitle>
-          <Badge variant="secondary" className="w-fit mt-1">ID: {user.id}</Badge>
+          <Badge variant="secondary" className="w-fit mt-1">
+            ID: {user.id}
+          </Badge>
         </div>
       </CardHeader>
       <CardContent className="grid gap-4">
@@ -45,7 +58,11 @@ export function UserCard({ user }: UserCardProps) {
             <span>{user.location}</span>
           </div>
         )}
+        <div>
+          <EditUserDialog user={user} onUpdate={onUpdate} />{" "}
+          {/* Pass the onUpdate function */}
+        </div>
       </CardContent>
     </Card>
-  )
+  );
 }
